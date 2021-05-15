@@ -22,6 +22,7 @@ with SSHTunnelForwarder(
             passwd=sql_password, db=sql_main_database,
             port=tunnel.local_bind_port)
 
+
     mycursor = conn.cursor()
 
 
@@ -31,6 +32,7 @@ with SSHTunnelForwarder(
     lname VARCHAR(30),
     gender CHAR(1),
     joining DATE);"""
+    
 
 
     mycursor.execute(sql_command)
