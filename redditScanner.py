@@ -1,4 +1,4 @@
-import praw
+from psaw import PushshiftAPI
 import datetime
 import mysql.connector
 from sshtunnel import SSHTunnelForwarder
@@ -23,11 +23,12 @@ ssh_port = 22
 sql_ip = '1.1.1.1.1'
 
 # Reddit Connection Setting
-reddit = praw.Reddit(
-     client_id="lMuoVyKT4Ax7Fg",
-     client_secret="oL1GwLR6v8zt9rcBdmU-qJaXjLA_fg",
-     user_agent="PodorCN1"
- )
+dataTimeFocus = [int(datetime.datetime(2021, 5, 2).timestamp()),int(datetime.datetime(2021, 5, 3).timestamp()),
+    int(datetime.datetime(2021, 5, 4).timestamp()),int(datetime.datetime(2021, 5, 5).timestamp()),
+    int(datetime.datetime(2021, 5, 6).timestamp()),int(datetime.datetime(2021, 5, 7).timestamp()),
+    int(datetime.datetime(2021, 5, 8).timestamp()),int(datetime.datetime(2021, 5, 9).timestamp())]
+
+api = PushshiftAPI()
 
 with SSHTunnelForwarder(
         (ssh_host, ssh_port),
@@ -43,45 +44,34 @@ with SSHTunnelForwarder(
 
     mycursor.execute("CREATE DATABASE IF NOT EXISTS reddit_data")
 
-    sqlTableInit = """CREATE TABLE IF NOT EXISTS reddit_data.reddit_data_sentiment
+    sqlTableInit = """CREATE TABLE IF NOT EXISTS reddit_data.reddit_data_sentiment2
     (postTime DATETIME,
     subreddit VARCHAR(500),
-    title VARCHAR(500),
     body VARCHAR(2000),
     sentiment DECIMAL(5,4));"""
 
     mycursor.execute(sqlTableInit)
+    counter = 0
 
-    sqlFormula = "INSERT INTO reddit_data.reddit_data_sentiment (postTime, subreddit, title, body, sentiment) VALUES (%s, %s, %s, %s, %s)"
+    sqlFormula = "INSERT INTO reddit_data.reddit_data_sentiment2 (postTime, subreddit, body, sentiment) VALUES (%s, %s, %s, %s)"
     
-
-
-
-
     demoji.download_codes()
 
-    while True:
-        counter2 += 1
-        counter = 0
-        if counter2 > 100:
-            break
-        subreddit = reddit.subreddit("wallstreetbets+investing+stocks+pennystocks+weedstocks+StockMarket+Trading+Daytrading+algotrading")
-        for comment in subreddit.stream.comments(skip_existing=True):
+    for day in dataTimeFocus:
+        dayList= list(api.search_comments(before=day,subreddit='wallstreetbets',limit=20000))
+        for comment in dayList:
             try:
                 curPostTime = comment.created_utc
-                if curPostTime < (time.time() - 604800):
-                    continue
+                counter += 1
                 print("\r%d                                                                                         " % counter,end="")
                 curPostTime = datetime.datetime.fromtimestamp(curPostTime)
                 subreddit = str(comment.subreddit)
-                title = str(comment.link_title)
+                #title = str(comment.title)
                 body = demoji.replace(comment.body)
                 Rdict = demoji.findall(body)
 
-
                 for key in Rdict:
                     body = body.replace(key,Rdict[key])
-                
                 if len(body) < 2000:
                     body = body
                 else:
@@ -89,12 +79,9 @@ with SSHTunnelForwarder(
                 # We do not consier the case when the body is too large
                 vs = analyzer.polarity_scores(unidecode(body))
                 sentiment = vs['compound']
-                db = (curPostTime,subreddit,title,body,sentiment)
+                db = (curPostTime,subreddit,body,sentiment)
                 mycursor.execute(sqlFormula, db)
                 conn.commit()
-                counter += 1
-                if counter > 100:
-                    break
             except Exception as e:
                 print("\r"+str(e))
                 #time.sleep(10)
