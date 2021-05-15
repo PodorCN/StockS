@@ -15,7 +15,7 @@ for comment in subreddit.stream.comments(skip_existing=True):
     title = str(comment.link_title)
     body = str(comment.body)
     print("Body: "+body)
-    print(comment.created_utc)
+    print("subreddit: "+comment.created_utc)
     print("author: "+author)
     print("title: "+title)
     break

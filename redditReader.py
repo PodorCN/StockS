@@ -52,7 +52,7 @@ with SSHTunnelForwarder(
     counter = 0
 
     while True:
-        if counter > 100:
+        if counter > 1000:
             break
         try:
             subreddit = reddit.subreddit("wallstreetbets+investing+stocks+pennystocks+weedstocks+StockMarket+Trading+Daytrading+algotrading")
@@ -60,7 +60,6 @@ with SSHTunnelForwarder(
                 print("\r%d" % counter,end="")
                 current_time = datetime.datetime.now()
                 subreddit = str(comment.subreddit)
-                comment.time()
                 title = str(comment.link_title)
                 body = str(comment.body)
                 if len(body) < 2000:
