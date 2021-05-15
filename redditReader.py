@@ -48,7 +48,7 @@ with SSHTunnelForwarder(
     body VARCHAR(2000),
     sentiment DECIMAL(5,4));"""
 
-    sqlFormula = "INSERT INTO reddit_data.reddit_data_sentiment (date_time, subreddit, title, body, sentiment) VALUES (%s, %s, %s, %s, %s, %s)"
+    sqlFormula = "INSERT INTO reddit_data.reddit_data_sentiment (date_time, subreddit, title, body, sentiment) VALUES (%s, %s, %s, %s, %s)"
     counter = 0
 
     while True:
@@ -60,6 +60,7 @@ with SSHTunnelForwarder(
                 print("\r%d" % counter,end="")
                 current_time = datetime.datetime.now()
                 subreddit = str(comment.subreddit)
+                comment.time()
                 title = str(comment.link_title)
                 body = str(comment.body)
                 if len(body) < 2000:
@@ -73,7 +74,7 @@ with SSHTunnelForwarder(
                 mycursor.execute(sqlFormula, db)
                 conn.commit()
                 counter += 1
-                if counter > 100:
+                if counter > 1000:
                     break
         except Exception as e:
             print(str(e))
