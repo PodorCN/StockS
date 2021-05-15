@@ -29,8 +29,6 @@ reddit = praw.Reddit(
      user_agent="PodorCN1"
  )
 
-
-
 with SSHTunnelForwarder(
         (ssh_host, ssh_port),
         ssh_username=ssh_user,
@@ -56,6 +54,8 @@ with SSHTunnelForwarder(
 
     sqlFormula = "INSERT INTO reddit_data.reddit_data_sentiment (postTime, subreddit, title, body, sentiment) VALUES (%s, %s, %s, %s, %s)"
     counter = 0
+    counter2 =0
+
 
     
     mycursor.execute("ALTER DATABASE `%s` CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci'" % 'reddit_data')
@@ -63,8 +63,12 @@ with SSHTunnelForwarder(
     demoji.download_codes()
 
     while True:
+        counter2 += 1
+        counter = 0
+        if counter2 > 100:
+            break
         subreddit = reddit.subreddit("wallstreetbets+investing+stocks+pennystocks+weedstocks+StockMarket+Trading+Daytrading+algotrading")
-        for comment in subreddit.stream.comments(skip_existing=False):
+        for comment in subreddit.stream.comments(skip_existing=True):
             try:
                 curPostTime = comment.created_utc
                 if curPostTime < (time.time() - 604800):
@@ -90,6 +94,8 @@ with SSHTunnelForwarder(
                 mycursor.execute(sqlFormula, db)
                 conn.commit()
                 counter += 1
+                if counter > 100:
+                    break
             except Exception as e:
                 print("\r"+str(e))
                 #time.sleep(10)
