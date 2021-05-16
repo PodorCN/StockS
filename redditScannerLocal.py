@@ -25,15 +25,15 @@ dataTimeFocus = [int(datetime.datetime(2021, 5, 2).timestamp()), int(datetime.da
                 int(datetime.datetime(2021, 5, 10).timestamp()), int(datetime.datetime(2021, 5, 11).timestamp()),
                 int(datetime.datetime(2021, 5, 12).timestamp()), int(datetime.datetime(2021, 5, 13).timestamp()),
                 int(datetime.datetime(2021, 5, 14).timestamp()), int(datetime.datetime(2021, 5, 15).timestamp()),
-                int(datetime.datetime(2021, 5, 16).timestamp()),int(datetime.datetime(2021, 5, 2).timestamp())+ datetime.timedelta(hours=12), 
-                int(datetime.datetime(2021, 5, 3).timestamp())+ datetime.timedelta(hours=12)+ datetime.timedelta(hours=12),
-                int(datetime.datetime(2021, 5, 4).timestamp())+ datetime.timedelta(hours=12), int(datetime.datetime(2021, 5, 5).timestamp())+ datetime.timedelta(hours=12),
-                int(datetime.datetime(2021, 5, 6).timestamp())+ datetime.timedelta(hours=12), int(datetime.datetime(2021, 5, 7).timestamp())+ datetime.timedelta(hours=12),
-                int(datetime.datetime(2021, 5, 8).timestamp())+ datetime.timedelta(hours=12), int(datetime.datetime(2021, 5, 9).timestamp())+ datetime.timedelta(hours=12),
-                int(datetime.datetime(2021, 5, 10).timestamp())+ datetime.timedelta(hours=12), int(datetime.datetime(2021, 5, 11).timestamp())+ datetime.timedelta(hours=12),
-                int(datetime.datetime(2021, 5, 12).timestamp())+ datetime.timedelta(hours=12), int(datetime.datetime(2021, 5, 13).timestamp())+ datetime.timedelta(hours=12),
-                int(datetime.datetime(2021, 5, 14).timestamp())+ datetime.timedelta(hours=12), int(datetime.datetime(2021, 5, 15).timestamp())+ datetime.timedelta(hours=12),
-                int(datetime.datetime(2021, 5, 16).timestamp())+ datetime.timedelta(hours=12),]
+                int(datetime.datetime(2021, 5, 16).timestamp()),int(datetime.datetime(2021, 5, 2).timestamp()+ datetime.timedelta(hours=12)), 
+                int(datetime.datetime(2021, 5, 3).timestamp()+ datetime.timedelta(hours=12)),
+                int(datetime.datetime(2021, 5, 4).timestamp()+ datetime.timedelta(hours=12)), int(datetime.datetime(2021, 5, 5).timestamp()+ datetime.timedelta(hours=12)),
+                int(datetime.datetime(2021, 5, 6).timestamp()+ datetime.timedelta(hours=12)), int(datetime.datetime(2021, 5, 7).timestamp()+ datetime.timedelta(hours=12)),
+                int(datetime.datetime(2021, 5, 8).timestamp()+ datetime.timedelta(hours=12)), int(datetime.datetime(2021, 5, 9).timestamp()+ datetime.timedelta(hours=12)),
+                int(datetime.datetime(2021, 5, 10).timestamp()+ datetime.timedelta(hours=12)), int(datetime.datetime(2021, 5, 11).timestamp()+ datetime.timedelta(hours=12)),
+                int(datetime.datetime(2021, 5, 12).timestamp()+ datetime.timedelta(hours=12)), int(datetime.datetime(2021, 5, 13).timestamp()+ datetime.timedelta(hours=12)),
+                int(datetime.datetime(2021, 5, 14).timestamp()+ datetime.timedelta(hours=12)), int(datetime.datetime(2021, 5, 15).timestamp()+ datetime.timedelta(hours=12)),
+                int(datetime.datetime(2021, 5, 16).timestamp()+ datetime.timedelta(hours=12)),]
 
 api = PushshiftAPI()
 
