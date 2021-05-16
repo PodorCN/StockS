@@ -1,7 +1,7 @@
 from psaw import PushshiftAPI
 import datetime
 import mysql.connector
-from sshtunnel import SSHTunnelForwarder
+#from sshtunnel import SSHTunnelForwarder
 from unidecode import unidecode
 import time
 import demoji
@@ -49,7 +49,7 @@ demoji.download_codes()
 
 for day in dataTimeFocus:
     dayList = list(api.search_comments(
-    before=day, subreddit='wallstreetbets', limit=20000))
+    before=day, subreddit='wallstreetbets', limit=10000))
     for comment in dayList:
         try:
             curPostTime = comment.created_utc
