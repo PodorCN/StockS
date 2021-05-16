@@ -11,16 +11,11 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 analyzer = SentimentIntensityAnalyzer()
 
 # SQL Connection Setting
-sql_hostname = '127.0.0.1'
+sql_hostname = 'localhost'
 sql_username = 'RedditIO'
 sql_password = 'DataX123.'
 sql_main_database = 'reddit'
 sql_port = 3306
-ssh_host = 'prd.podor.ca'
-ssh_user = 'root'
-ssh_passwd = '!Ez8,=7k%tyv,m,Z'
-ssh_port = 22
-sql_ip = '1.1.1.1.1'
 
 # Reddit Connection Setting
 dataTimeFocus = [int(datetime.datetime(2021, 5, 2).timestamp()), int(datetime.datetime(2021, 5, 3).timestamp()),
@@ -32,16 +27,14 @@ dataTimeFocus = [int(datetime.datetime(2021, 5, 2).timestamp()), int(datetime.da
 
 api = PushshiftAPI()
 
-
 conn = mysql.connector.connect(host='127.0.0.1', user=sql_username,
-                               passwd=sql_password, db=sql_main_database,
-                               port=tunnel.local_bind_port)
+                               passwd=sql_password, db=sql_main_database)
 
 mycursor = conn.cursor()
 
 mycursor.execute("CREATE DATABASE IF NOT EXISTS reddit_data")
 
-sqlTableInit = """CREATE TABLE IF NOT EXISTS reddit_data.reddit_data_sentiment2
+sqlTableInit = """CREATE TABLE IF NOT EXISTS reddit_data.reddit_data_sentiment3
     (postTime DATETIME,
     subreddit VARCHAR(500),
     body VARCHAR(2000),
@@ -50,7 +43,7 @@ sqlTableInit = """CREATE TABLE IF NOT EXISTS reddit_data.reddit_data_sentiment2
 mycursor.execute(sqlTableInit)
 counter = 0
 
-sqlFormula = "INSERT INTO reddit_data.reddit_data_sentiment2 (postTime, subreddit, body, sentiment) VALUES (%s, %s, %s, %s)"
+sqlFormula = "INSERT INTO reddit_data.reddit_data_sentiment3 (postTime, subreddit, body, sentiment) VALUES (%s, %s, %s, %s)"
 
 demoji.download_codes()
 
