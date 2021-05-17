@@ -25,15 +25,9 @@ dataTimeFocus = [int(datetime.datetime(2021, 5, 2).timestamp()), int(datetime.da
                 int(datetime.datetime(2021, 5, 10).timestamp()), int(datetime.datetime(2021, 5, 11).timestamp()),
                 int(datetime.datetime(2021, 5, 12).timestamp()), int(datetime.datetime(2021, 5, 13).timestamp()),
                 int(datetime.datetime(2021, 5, 14).timestamp()), int(datetime.datetime(2021, 5, 15).timestamp()),
-                int(datetime.datetime(2021, 5, 16).timestamp()),int(datetime.datetime(2021, 5, 2).timestamp()+ datetime.timedelta(hours=12)), 
-                int(datetime.datetime(2021, 5, 3).timestamp()+ datetime.timedelta(hours=12)),
-                int(datetime.datetime(2021, 5, 4).timestamp()+ datetime.timedelta(hours=12)), int(datetime.datetime(2021, 5, 5).timestamp()+ datetime.timedelta(hours=12)),
-                int(datetime.datetime(2021, 5, 6).timestamp()+ datetime.timedelta(hours=12)), int(datetime.datetime(2021, 5, 7).timestamp()+ datetime.timedelta(hours=12)),
-                int(datetime.datetime(2021, 5, 8).timestamp()+ datetime.timedelta(hours=12)), int(datetime.datetime(2021, 5, 9).timestamp()+ datetime.timedelta(hours=12)),
-                int(datetime.datetime(2021, 5, 10).timestamp()+ datetime.timedelta(hours=12)), int(datetime.datetime(2021, 5, 11).timestamp()+ datetime.timedelta(hours=12)),
-                int(datetime.datetime(2021, 5, 12).timestamp()+ datetime.timedelta(hours=12)), int(datetime.datetime(2021, 5, 13).timestamp()+ datetime.timedelta(hours=12)),
-                int(datetime.datetime(2021, 5, 14).timestamp()+ datetime.timedelta(hours=12)), int(datetime.datetime(2021, 5, 15).timestamp()+ datetime.timedelta(hours=12)),
-                int(datetime.datetime(2021, 5, 16).timestamp()+ datetime.timedelta(hours=12)),]
+                int(datetime.datetime(2021, 5, 16).timestamp())]
+
+startTime = int(datetime.datetime(2021, 5, 16).timestamp())
 
 api = PushshiftAPI()
 
@@ -44,7 +38,7 @@ mycursor = conn.cursor()
 
 mycursor.execute("CREATE DATABASE IF NOT EXISTS reddit_data")
 
-sqlTableInit = """CREATE TABLE IF NOT EXISTS reddit_data.reddit_data_sentiment3
+sqlTableInit = """CREATE TABLE IF NOT EXISTS reddit_data.reddit_data_sentiment
     (postTime DATETIME,
     subreddit VARCHAR(500),
     body VARCHAR(2000),
@@ -53,12 +47,14 @@ sqlTableInit = """CREATE TABLE IF NOT EXISTS reddit_data.reddit_data_sentiment3
 mycursor.execute(sqlTableInit)
 counter = 0
 
-sqlFormula = "INSERT INTO reddit_data.reddit_data_sentiment3 (postTime, subreddit, body, sentiment) VALUES (%s, %s, %s, %s)"
+sqlFormula = "INSERT INTO reddit_data.reddit_data_sentiment (postTime, subreddit, body, sentiment) VALUES (%s, %s, %s, %s)"
 
 demoji.download_codes()
+today = startTime
 
-for day in dataTimeFocus:
-    dayList = list(api.search_comments(before=day, subreddit='wallstreetbets', limit=5000))
+for i in range(120):
+    dayList = list(api.search_comments(before=today, subreddit='wallstreetbets', limit=4000))
+    today = int((datetime.datetime(2021, 5, 16)-datetime.timedelta(hours=6)).timestamp())
     for comment in dayList:
         try:
             curPostTime = comment.created_utc
