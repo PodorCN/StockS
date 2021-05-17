@@ -66,7 +66,6 @@ with SSHTunnelForwarder(
                 print("\r%d                                                                                         " % counter,end="")
                 curPostTime = datetime.datetime.fromtimestamp(curPostTime)
                 subreddit = str(comment.subreddit)
-                #title = str(comment.title)
                 body = demoji.replace(comment.body)
                 Rdict = demoji.findall(body)
 
