@@ -18,14 +18,6 @@ sql_main_database = 'reddit'
 sql_port = 3306
 
 # Reddit Connection Setting
-dataTimeFocus = [int(datetime.datetime(2021, 5, 2).timestamp()), int(datetime.datetime(2021, 5, 3).timestamp()),
-                int(datetime.datetime(2021, 5, 4).timestamp()), int(datetime.datetime(2021, 5, 5).timestamp()),
-                int(datetime.datetime(2021, 5, 6).timestamp()), int(datetime.datetime(2021, 5, 7).timestamp()),
-                int(datetime.datetime(2021, 5, 8).timestamp()), int(datetime.datetime(2021, 5, 9).timestamp()),
-                int(datetime.datetime(2021, 5, 10).timestamp()), int(datetime.datetime(2021, 5, 11).timestamp()),
-                int(datetime.datetime(2021, 5, 12).timestamp()), int(datetime.datetime(2021, 5, 13).timestamp()),
-                int(datetime.datetime(2021, 5, 14).timestamp()), int(datetime.datetime(2021, 5, 15).timestamp()),
-                int(datetime.datetime(2021, 5, 16).timestamp())]
 
 startTime = int(datetime.datetime(2021, 5, 16).timestamp())
 
@@ -38,7 +30,7 @@ mycursor = conn.cursor()
 
 mycursor.execute("CREATE DATABASE IF NOT EXISTS reddit_data")
 
-sqlTableInit = """CREATE TABLE IF NOT EXISTS reddit_data.reddit_data_sentiment
+sqlTableInit = """CREATE TABLE IF NOT EXISTS reddit_data.reddit_data_sentiment2
     (postTime DATETIME,
     subreddit VARCHAR(500),
     body VARCHAR(2000),
@@ -47,39 +39,47 @@ sqlTableInit = """CREATE TABLE IF NOT EXISTS reddit_data.reddit_data_sentiment
 mycursor.execute(sqlTableInit)
 counter = 0
 
-sqlFormula = "INSERT INTO reddit_data.reddit_data_sentiment (postTime, subreddit, body, sentiment) VALUES (%s, %s, %s, %s)"
+sqlFormula = "INSERT INTO reddit_data.reddit_data_sentiment2 (postTime, subreddit, body, sentiment) VALUES (%s, %s, %s, %s)"
 
 demoji.download_codes()
 today = startTime
 
-for i in range(120):
-    dayList = list(api.search_comments(before=today, subreddit='wallstreetbets', limit=4000))
-    today = int((datetime.datetime(2021, 5, 16)-datetime.timedelta(hours=6)).timestamp())
-    for comment in dayList:
-        try:
-            curPostTime = comment.created_utc
-            counter += 1
-            print("\r%d                                                                                         " % counter, end="")
-            curPostTime = datetime.datetime.fromtimestamp(curPostTime)
-            subreddit = str(comment.subreddit)
-            # title = str(comment.title)
-            body = demoji.replace(comment.body)
-            Rdict = demoji.findall(body)
+for i in range(7):
+    dayHours = []
+    currentTime = today-datetime.timedelta(hours=4)
+    for j in range(7):
+        dayHours.append(int(currentTime.timestamp()))
+        currentTime = currentTime - datetime.timedelta(hours=1)
+    today = today - datetime.timedelta(days=1)
+    for h in dayHours:
+        hourList = list(api.search_comments(
+            before=h, subreddit='wallstreetbets', limit=3000))
+        
+        for comment in hourList:
+            try:
+                curPostTime = comment.created_utc
+                counter += 1
+                print("\r%d                                                                                         " % counter, end="")
+                curPostTime = datetime.datetime.fromtimestamp(curPostTime)
+                subreddit = str(comment.subreddit)
+                # title = str(comment.title)
+                body = demoji.replace(comment.body)
+                Rdict = demoji.findall(body)
 
-            for key in Rdict:
-                body = body.replace(key, Rdict[key])
-            if len(body) < 2000:
-                body = body
-            else:
-                body = ' '
+                for key in Rdict:
+                    body = body.replace(key, Rdict[key])
+                if len(body) < 2000:
+                    body = body
+                else:
+                    body = ' '
             # We do not consier the case when the body is too large
-            vs = analyzer.polarity_scores(unidecode(body))
-            sentiment = vs['compound']
-            db = (curPostTime, subreddit, body, sentiment)
-            mycursor.execute(sqlFormula, db)
-            conn.commit()
-        except Exception as e:
-            print("\r"+str(e))
-            # time.sleep(10)
+                vs = analyzer.polarity_scores(unidecode(body))
+                sentiment = vs['compound']
+                db = (curPostTime, subreddit, body, sentiment)
+                mycursor.execute(sqlFormula, db)
+                conn.commit()
+            except Exception as e:
+                print("\r"+str(e))
+                # time.sleep(10)
 
 conn.close()
